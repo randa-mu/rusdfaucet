@@ -52,7 +52,7 @@ export default function Faucet() {
     } finally {
             setIsMinting(false);
         }
-  }, [isConnected, isMatching, provider, signer]);
+  }, [isConnected, isMatching, provider, signer, selectedId]);
 
     return (
         <div className="min-h-screen bg-white-pattern">
