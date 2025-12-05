@@ -1,0 +1,35 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: "actions/checkout@v4"
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          submodules: recursive
+
+      - name: Login to Artifact Registry
+        uses: "docker/login-action@v3"
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GCP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Install nodejs 🔧
+        uses: "actions/setup-node@v3"
+        with:
+          node-version: 22.9.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}
+        run: npm run build
